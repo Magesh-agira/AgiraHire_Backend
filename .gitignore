@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /AgiraHire_Backend/appsettings.json
+/AgiraHire_Backend/WeatherForecast.cs
