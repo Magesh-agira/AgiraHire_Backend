@@ -1,6 +1,7 @@
 ﻿using AgiraHire_Backend.Interfaces;
 using AgiraHire_Backend.Models;
 using AgiraHire_Backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -9,6 +10,7 @@ namespace AgiraHire_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles ="Admin,Hr")]
     public class OpportunitiesController : ControllerBase
     {
         private readonly IOpportunityService _opportunityService;
@@ -29,6 +31,7 @@ namespace AgiraHire_Backend.Controllers
 
         // POST api/<OpportunitiesController>
         [HttpPost]
+        [Authorize]
         public opportunity Addopportunity([FromBody] opportunity opp) { 
             var opportunity=_opportunityService.Addopportunity(opp);
             return opportunity;
