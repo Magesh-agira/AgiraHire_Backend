@@ -11,6 +11,8 @@ namespace AgiraHire_Backend.Interfaces
 
         Role AddRole(Role role);
         bool AssignRoleToUser(AddUserRole obj);
-      
+
+        bool DeleteUser(int UserId);
+
     }
 }

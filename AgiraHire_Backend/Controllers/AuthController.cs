@@ -50,5 +50,19 @@ namespace AgiraHire_Backend.Controllers
             return addRole;
         }
 
+        [HttpDelete("DeleteUser/{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            var success = _auth.DeleteUser(id);
+
+            if (!success)
+            {
+                return NotFound("User not found"); // Return message if user not found
+            }
+
+            return NoContent(); // Deletion successful
+        }
+
+
     }
 }

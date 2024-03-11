@@ -36,6 +36,8 @@ namespace AgiraHire_Backend.Services
             return addedUser.Entity;
         }
 
+
+
         public bool AssignRoleToUser(AddUserRole obj)
         {
             try
@@ -67,6 +69,22 @@ namespace AgiraHire_Backend.Services
 
 
         }
+
+        public bool DeleteUser(int UserId)
+        {
+            var user = _context.Users.Find(UserId);
+
+            if (user == null)
+            {
+                return false; // User not found
+            }
+
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+
+            return true; // Deletion successful
+        }
+
 
         public string Login(LoginRequest loginRequest)
         {
