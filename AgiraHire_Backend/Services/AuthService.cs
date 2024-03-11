@@ -29,6 +29,8 @@ namespace AgiraHire_Backend.Services
 
         public User AddUser(User user)
         {
+            user.SetPassword(user.Password);
+
             var addedUser= _context.Users.Add(user);
             _context.SaveChanges();
             return addedUser.Entity;
@@ -70,8 +72,8 @@ namespace AgiraHire_Backend.Services
         {
             if (loginRequest.Email != null && loginRequest.Password !=null)
             {
-                var user = _context.Users.SingleOrDefault(s => s.Email == loginRequest.Email && s.Password== loginRequest.Password);
-                if (user != null)
+                var user = _context.Users.SingleOrDefault(s => s.Email == loginRequest.Email );
+                if (user != null && user.VerifyPassword(loginRequest.Password))
                 {
                     var claims = new List<Claim>
                     {
