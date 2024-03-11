@@ -60,7 +60,7 @@ namespace AgiraHire_Backend.Controllers
                 return NotFound("User not found"); // Return message if user not found
             }
 
-            return NoContent(); // Deletion successful
+            return Content("Deleted successfull"); // Deletion successful
         }
 
 

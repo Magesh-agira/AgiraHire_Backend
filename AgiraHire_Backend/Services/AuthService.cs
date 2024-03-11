@@ -79,7 +79,7 @@ namespace AgiraHire_Backend.Services
                 return false; // User not found
             }
 
-            _context.Users.Remove(user);
+             user.IsDeleted = true; // Set IsDeleted property to true
             _context.SaveChanges();
 
             return true; // Deletion successful
