@@ -29,12 +29,47 @@ namespace AgiraHire_Backend.Services
 
         public User AddUser(User user)
         {
+            // Check if the user with the same email already exists, regardless of the isDeleted flag
+            var existingUser = _context.Users.FirstOrDefault(u => u.Email == user.Email);
+
+            if (existingUser != null)
+            {
+                // If the existing user is marked as deleted, we can re-use this record
+                // Instead of adding a new entry, we update the existing one
+                if (existingUser.IsDeleted == true)
+                {
+                    // Update the existing user's properties
+                    existingUser.IsDeleted = false;
+                    existingUser.SetPassword(user.Password); // Optionally update the password if necessary
+
+                    // Save changes to the database
+                    _context.SaveChanges();
+
+                    // Return the updated user entity
+                    return existingUser;
+                }
+
+                else
+                {
+                    // Handle the case where a user with the same email already exists and is not marked as deleted
+                    // For example, you can throw an exception, return null, or handle it in a way suitable for your application flow
+                    throw new Exception("User with the same email already exists.");
+                }
+            }
+
+            // Set the password for the new user
             user.SetPassword(user.Password);
 
-            var addedUser= _context.Users.Add(user);
+            // Add the user to the database context
+            var addedUser = _context.Users.Add(user);
+
+            // Save changes to the database
             _context.SaveChanges();
+
+            // Return the added user entity
             return addedUser.Entity;
         }
+
 
 
 
