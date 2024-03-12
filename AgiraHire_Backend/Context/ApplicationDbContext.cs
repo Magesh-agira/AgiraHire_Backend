@@ -16,6 +16,8 @@ namespace AgiraHire_Backend.Context
         public DbSet<opportunity> Opportunities { get; set; }
         public DbSet<Applicant> Applicants { get; set; }
 
+        public DbSet<Interview_round> Interview_Rounds {  get; set; }      
+
       
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         { 
