@@ -16,6 +16,8 @@ namespace AgiraHire_Backend.Models
         public OpportunityStatus Status { get; set; }
         public bool? IsDeleted { get; set; } = false;
 
+       // public ICollection<Applicant> Applicants { get; set; }   //one ooportunity have many applicants
+
     }
     public enum OpportunityStatus
     {

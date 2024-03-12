@@ -4,6 +4,7 @@ using AgiraHire_Backend.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AgiraHire_Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240312052431_intialcreate")]
+    partial class intialcreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -180,11 +183,18 @@ namespace AgiraHire_Backend.Migrations
 
             modelBuilder.Entity("AgiraHire_Backend.Models.Applicant", b =>
                 {
-                    b.HasOne("AgiraHire_Backend.Models.opportunity", null)
-                        .WithMany()
+                    b.HasOne("AgiraHire_Backend.Models.opportunity", "Opportunity")
+                        .WithMany("Applicants")
                         .HasForeignKey("OpportunityId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Opportunity");
+                });
+
+            modelBuilder.Entity("AgiraHire_Backend.Models.opportunity", b =>
+                {
+                    b.Navigation("Applicants");
                 });
 #pragma warning restore 612, 618
         }
