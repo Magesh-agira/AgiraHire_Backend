@@ -11,7 +11,7 @@ namespace AgiraHire_Backend.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "ForeignKey_Applicants_Opportunity",
+                name: "FK_Applicants_Opportunities_OpportunityId",
                 table: "Applicants");
 
             migrationBuilder.AddForeignKey(

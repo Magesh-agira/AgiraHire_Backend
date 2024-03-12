@@ -22,7 +22,7 @@ namespace AgiraHire_Backend.Controllers
 
         // GET api/<OpportunitiesController>/5
         [HttpGet]
-        [Authorize]
+     
         public List<opportunity> GetOpportunities()
         {
             return _opportunityService.GetOpportunities();
@@ -32,7 +32,7 @@ namespace AgiraHire_Backend.Controllers
 
         // POST api/<OpportunitiesController>
         [HttpPost]
-        [Authorize]
+     
         public opportunity Addopportunity([FromBody] opportunity opp) { 
             var opportunity=_opportunityService.Addopportunity(opp);
             return opportunity;
