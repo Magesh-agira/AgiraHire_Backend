@@ -16,6 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<IOpportunityService, OpportunityService>() ;
 builder.Services.AddTransient<IApplicantService, ApplicantService>() ;
+builder.Services.AddTransient<IInterviewRoundService, InterviewRoundService>() ;
 builder.Services.AddDbContext<ApplicationDbContext>
     (options => options.UseSqlServer(builder.Configuration.GetConnectionString("Database")));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
