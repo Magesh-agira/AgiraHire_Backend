@@ -160,7 +160,10 @@ namespace AgiraHire_Backend.Services
                         expires: DateTime.UtcNow.AddMinutes(10),
                         signingCredentials: signIn);
                     var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+                    
                     return jwtToken;
+
+
 
                 }
                 else
