@@ -10,7 +10,7 @@ namespace AgiraHire_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Admin")]
+    //[Authorize(Roles ="Admin")]
     public class OpportunitiesController : ControllerBase
     {
         private readonly IOpportunityService _opportunityService;
