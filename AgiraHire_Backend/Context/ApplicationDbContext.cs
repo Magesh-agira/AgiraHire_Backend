@@ -20,6 +20,7 @@ namespace AgiraHire_Backend.Context
         
         public DbSet<InterviewSlot> InterviewSlots { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
+        public DbSet<InterviewAssignment> InterviewAssignments { get; set; }
 
       
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -40,6 +41,7 @@ namespace AgiraHire_Backend.Context
                 .HasOne<Interview_round>()     // Assuming Interview is the name of the related entity
                 .WithMany()              // Assuming multiple InterviewSlots can belong to the same Interview
                 .HasForeignKey(i => i.RoundId)
+             
                 .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Feedback>()
                 .HasOne<Applicant>()
@@ -49,7 +51,17 @@ namespace AgiraHire_Backend.Context
             modelBuilder.Entity<Feedback>()
                 .HasOne<User>()
                 .WithMany()
-                .HasForeignKey(u=> u.InterviewerId).IsRequired().OnDelete(DeleteBehavior.Restrict); 
+                .HasForeignKey(u=> u.InterviewerId).IsRequired().OnDelete(DeleteBehavior.Restrict);
+           
+            modelBuilder.Entity<InterviewAssignment>()
+               .HasOne<Applicant>()
+               .WithMany()
+               .HasForeignKey(a => a.ApplicantId).IsRequired().OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<InterviewAssignment>()
+               .HasOne<InterviewSlot>()
+               .WithMany()
+               .HasForeignKey(a => a.SlotId).IsRequired().OnDelete(DeleteBehavior.Restrict);
 
         }
 

@@ -22,5 +22,12 @@ namespace AgiraHire_Backend.Controllers
             var interview_feedback = _feedbackService.AddFeedback(feedback);
             return interview_feedback;
         }
+
+        [HttpGet]
+        public List<Feedback> GetFeedback()
+        {
+            return _feedbackService.GetFeedback();
+
+        }
     }
 }

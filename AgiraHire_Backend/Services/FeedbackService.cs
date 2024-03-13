@@ -19,5 +19,12 @@ namespace AgiraHire_Backend.Services
             return feed.Entity;
 
         }
+
+        public List<Feedback> GetFeedback()
+        {
+            var feedbacks = _context.Feedbacks.ToList();
+            return feedbacks;
+        }
+
     }
 }
