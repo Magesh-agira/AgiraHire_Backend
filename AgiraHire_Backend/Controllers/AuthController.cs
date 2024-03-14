@@ -34,13 +34,7 @@ namespace AgiraHire_Backend.Controllers
         }
 
         // POST api/<AuthController>
-        [HttpPost("addUser")]
-        public User AddUser([FromBody] User user)
-        {
-            var addeduser = _auth.AddUser(user);
-            return addeduser;
 
-        }
 
         // PUT api/<AuthController>/5
         [HttpPost("addRole")]
@@ -50,18 +44,7 @@ namespace AgiraHire_Backend.Controllers
             return addRole;
         }
 
-        [HttpDelete("DeleteUser/{id}")]
-        public IActionResult DeleteUser(int id)
-        {
-            var success = _auth.DeleteUser(id);
 
-            if (!success)
-            {
-                return NotFound("User not found"); // Return message if user not found
-            }
-
-            return Content("Deleted successfull"); // Deletion successful
-        }
 
 
     }

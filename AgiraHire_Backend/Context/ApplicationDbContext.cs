@@ -27,7 +27,7 @@ namespace AgiraHire_Backend.Context
         { 
             modelBuilder.Entity<Applicant>()
                 .HasOne<opportunity>()
-                .WithMany()
+                .WithMany() 
                 .HasForeignKey(a => a.OpportunityId).IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
