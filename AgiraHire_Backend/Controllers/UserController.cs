@@ -23,6 +23,11 @@ namespace AgiraHire_Backend.Controllers
 
         }
 
+        [HttpGet("getUser")]
+        public List<User> GetUsers() {
+           return _user.GetUsers();
+        }
+
         [HttpDelete("DeleteUser/{id}")]
         public IActionResult DeleteUser(int id)
         {

@@ -6,6 +6,7 @@ namespace AgiraHire_Backend.Interfaces
     {
         User AddUser(User user);
 
+        public List<User> GetUsers();
         bool DeleteUser(int UserId);
 
     }
