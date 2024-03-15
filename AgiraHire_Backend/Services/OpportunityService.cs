@@ -16,13 +16,16 @@ namespace AgiraHire_Backend.Services
         public List<opportunity> GetOpportunities()
         {
             var opportunities=_context.Opportunities.ToList();
-            return opportunities;   
+            
+            return opportunities;
+           
         }
 
         public opportunity Addopportunity(opportunity opportunity)
         {
             var opp=_context.Opportunities.Add(opportunity);
             _context.SaveChanges();
+            Console.WriteLine(opp);
             return opp.Entity;
         }
     }
