@@ -27,12 +27,13 @@ namespace AgiraHire_Backend.Controllers
 
             var addedUser = _user.AddUser(user);
 
+
             if (addedUser == null)
             {
                 // If AddUser method returned null, return NotFound or appropriate status code
-                return NotFound("Failed to add user");
+                return NotFound("already email or Employee id  exist");
             }
-
+            
             return Ok(addedUser); // Return added user entity if successful
         }
 

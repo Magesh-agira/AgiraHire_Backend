@@ -45,6 +45,15 @@ namespace AgiraHire_Backend.Services
                 }
             }
 
+            var existingUserByEmployeeId = _context.Users.FirstOrDefault(u => u.Employee_Id == user.Employee_Id);
+
+            if (existingUserByEmployeeId != null)
+            {
+                // Handle the case where a user with the same employee ID already exists
+                ModelState.AddModelError("Employee", "User with same employee id exists.");
+                return null;
+            }
+            
             // Set the password for the new user
             user.SetPassword(user.Password);
             user.IsDeleted = false;
