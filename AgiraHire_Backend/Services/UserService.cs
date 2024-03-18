@@ -53,7 +53,7 @@ namespace AgiraHire_Backend.Services
             }
 
             // Set the password for the new user
-            user.SetPassword(user.Password);
+            user.SetPassword(user.Password);   //d
             user.IsDeleted = false;
 
             // Add the user to the database context
