@@ -1,5 +1,6 @@
 ﻿using AgiraHire_Backend.Interfaces;
 using AgiraHire_Backend.Models;
+using AgiraHire_Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AgiraHire_Backend.Controllers
@@ -16,11 +17,23 @@ namespace AgiraHire_Backend.Controllers
         }
 
         [HttpPost("addUser")]
-        public User AddUser([FromBody] User user)
+        public IActionResult AddUser([FromBody] User user)
         {
-            var addeduser = _user.AddUser(user);
-            return addeduser;
+            if (!ModelState.IsValid)
+            {
+                // If there are errors in ModelState, return BadRequest with ModelState errors
+                return BadRequest(ModelState);
+            }
 
+            var addedUser = _user.AddUser(user);
+
+            if (addedUser == null)
+            {
+                // If AddUser method returned null, return NotFound or appropriate status code
+                return NotFound("Failed to add user");
+            }
+
+            return Ok(addedUser); // Return added user entity if successful
         }
 
         [HttpGet("getUser")]

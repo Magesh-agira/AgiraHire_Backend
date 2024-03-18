@@ -1,19 +1,21 @@
 ﻿using AgiraHire_Backend.Context;
 using AgiraHire_Backend.Interfaces;
 using AgiraHire_Backend.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AgiraHire_Backend.Services
 {
-    public class UserService: IUserService
+    public class UserService : IUserService
     {
         private readonly ApplicationDbContext _context;
-        
-        public UserService(ApplicationDbContext context )
+
+        public UserService(ApplicationDbContext context)
         {
-
             _context = context;
-
         }
+
         public User AddUser(User user)
         {
             // Check if the user with the same email already exists, regardless of the isDeleted flag
@@ -26,7 +28,6 @@ namespace AgiraHire_Backend.Services
                 if (existingUserByEmail.IsDeleted == true)
                 {
                     // Update the existing user's properties
-                    //existingUserByEmail.IsDeleted = false;
                     existingUserByEmail.SetPassword(user.Password); // Optionally update the password if necessary
                     existingUserByEmail.Employee_Id = user.Employee_Id; // Update Employee ID
 
@@ -38,19 +39,11 @@ namespace AgiraHire_Backend.Services
                 }
                 else
                 {
-                    // Handle the case where a user with the same email already exists and is not marked as deleted
-                    throw new Exception("User with the same email already exists.");
+                    // Add error message to ModelState instead of throwing exception
+                    ModelState.AddModelError("Email", "User with the same email already exists.");
+                    return null;
                 }
             }
-
-            // Check if the user with the same employee ID already exists
-            //var existingUserByEmployeeId = _context.Users.FirstOrDefault(u => u.Employee_Id == user.Employee_Id);
-
-            //if (existingUserByEmployeeId != null)
-            //{
-            //    // Handle the case where a user with the same employee ID already exists
-            //    throw new Exception("User with the same employee ID already exists.");
-            //}
 
             // Set the password for the new user
             user.SetPassword(user.Password);
@@ -65,7 +58,6 @@ namespace AgiraHire_Backend.Services
             // Return the added user entity
             return addedUser.Entity;
         }
-
 
         public bool DeleteUser(int UserId)
         {
@@ -82,14 +74,13 @@ namespace AgiraHire_Backend.Services
             return true; // Deletion successful
         }
 
-
         public List<User> GetUsers()
         {
             var users = _context.Users.ToList();
-
             return users;
-
         }
 
+        // Add ModelState property for error messages
+        public ModelStateDictionary ModelState { get; set; } = new ModelStateDictionary();
     }
 }
