@@ -25,7 +25,6 @@ namespace AgiraHire_Backend.Services
         {
             var opp=_context.Opportunities.Add(opportunity);
             _context.SaveChanges();
-            Console.WriteLine(opp);
             return opp.Entity;
         }
     }
