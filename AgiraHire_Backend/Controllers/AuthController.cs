@@ -1,5 +1,6 @@
 ﻿using AgiraHire_Backend.Interfaces;
 using AgiraHire_Backend.Models;
+using AgiraHire_Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -19,18 +20,42 @@ namespace AgiraHire_Backend.Controllers
 
         // GET: api/<AuthController>
         [HttpPost("login")]
-        public string Login([FromBody] LoginRequest obj)
+        public IActionResult Login(LoginRequest loginRequest)
         {
-            var token = _auth.Login(obj);
-            return token;
+            var result = _auth.Login(loginRequest);
+            if (result.Success)
+            {
+                return Ok(new { Token = result.Data, Message = result.Message });
+            }
+            else
+            {
+                if (result.Data == null)
+                {
+                    // Invalid credentials
+                    return Unauthorized(new { Message = result.Message });
+                }
+                else
+                {
+                    // Other errors
+                    return BadRequest(new { Message = result.Message });
+                }
+
+            }
         }
 
         // GET api/<AuthController>/5
         [HttpPost("assignRole")]
-        public bool AssignRoleToUser([FromBody] AddUserRole userRole)
+        public IActionResult AssignRoleToUser(AddUserRole obj)
         {
-            var addedUserRole =_auth.AssignRoleToUser(userRole);
-            return addedUserRole;
+            var result = _auth.AssignRoleToUser(obj);
+            if (result.Success)
+            {
+                return Ok(new { Message = result.Message });
+            }
+            else
+            {
+                return BadRequest(new { Message = result.Message });
+            }
         }
 
         // POST api/<AuthController>

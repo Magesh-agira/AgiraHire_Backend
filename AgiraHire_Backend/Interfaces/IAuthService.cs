@@ -1,18 +1,12 @@
 ﻿using AgiraHire_Backend.Models;
-using Microsoft.AspNetCore.Identity.Data;
-
+using AgiraHire_Backend.Response;
 
 namespace AgiraHire_Backend.Interfaces
 {
     public interface IAuthService
     {
-        
-        string Login(Models.LoginRequest loginRequest);
-
+        OperationResult<string> Login(LoginRequest loginRequest);
         Role AddRole(Role role);
-        bool AssignRoleToUser(AddUserRole obj);
-
-        
-
+        OperationResult<bool> AssignRoleToUser(AddUserRole obj);
     }
 }
