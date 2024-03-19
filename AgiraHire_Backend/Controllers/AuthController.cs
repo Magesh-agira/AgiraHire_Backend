@@ -1,9 +1,9 @@
-﻿using AgiraHire_Backend.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using AgiraHire_Backend.Interfaces;
 using AgiraHire_Backend.Models;
-using AgiraHire_Backend.Services;
-using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using AgiraHire_Backend.Response;
+using System;
+using AgiraHire_Backend.Response.AgiraHire_Backend.Responses;
 
 namespace AgiraHire_Backend.Controllers
 {
@@ -15,10 +15,8 @@ namespace AgiraHire_Backend.Controllers
         public AuthController(IAuthService auth)
         {
             _auth = auth;
-            
         }
 
-        // GET: api/<AuthController>
         [HttpPost("login")]
         public IActionResult Login(LoginRequest loginRequest)
         {
@@ -37,13 +35,11 @@ namespace AgiraHire_Backend.Controllers
                 else
                 {
                     // Other errors
-                    return BadRequest(new { Message = result.Message });
+                    return BadRequestResponse.WithMessage(result.Message);
                 }
-
             }
         }
 
-        // GET api/<AuthController>/5
         [HttpPost("assignRole")]
         public IActionResult AssignRoleToUser(AddUserRole obj)
         {
@@ -54,23 +50,23 @@ namespace AgiraHire_Backend.Controllers
             }
             else
             {
-                return BadRequest(new { Message = result.Message });
+                return BadRequestResponse.WithMessage(result.Message);
             }
         }
 
-        // POST api/<AuthController>
-
-
-        // PUT api/<AuthController>/5
         [HttpPost("addRole")]
-        public Role AddRole( [FromBody] Role role)
+        public IActionResult AddRole([FromBody] Role role)
         {
-            var addRole=_auth.AddRole(role);
-            return addRole;
+            try
+            {
+                var addedRole = _auth.AddRole(role);
+                return Ok(addedRole);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return BadRequestResponse.WithMessage("An error occurred while adding role");
+            }
         }
-
-
-
-
     }
 }
