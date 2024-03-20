@@ -2,6 +2,7 @@
 using AgiraHire_Backend.Interfaces;
 using AgiraHire_Backend.Models;
 using AgiraHire_Backend.Response;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -61,8 +62,15 @@ namespace AgiraHire_Backend.Services
                 return new OperationResult<bool>(false, "An error occurred while assigning roles");
             }
         }
+        public List<Role> GetRoles()
+        {
+            // Fetch roles from the database using your DbContext
+            var roles = _context.Roles.ToList(); // Assuming you have a DbSet<Role> in your DbContext
 
-        public OperationResult<string> Login(LoginRequest loginRequest)
+            return roles;
+
+        }
+            public OperationResult<string> Login(LoginRequest loginRequest)
         {
             if (loginRequest != null && !string.IsNullOrWhiteSpace(loginRequest.Email) && !string.IsNullOrWhiteSpace(loginRequest.Password))
             {

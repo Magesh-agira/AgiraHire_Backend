@@ -70,6 +70,16 @@ namespace AgiraHire_Backend.Controllers
         }
 
 
+        // GET: api/<AuthController>/roles
+        [HttpGet("roles")]
+        public IActionResult GetRoles()
+        {
+            var roles = _auth.GetRoles(); // Assuming you have a method in your AuthService to retrieve roles
+            return Ok(roles);
+        }
+
+
+
 
 
     }

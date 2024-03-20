@@ -8,5 +8,7 @@ namespace AgiraHire_Backend.Interfaces
         OperationResult<string> Login(LoginRequest loginRequest);
         Role AddRole(Role role);
         OperationResult<bool> AssignRoleToUser(AddUserRole obj);
+        List<Role> GetRoles(); // Method signature for getting roles
     }
 }
+
