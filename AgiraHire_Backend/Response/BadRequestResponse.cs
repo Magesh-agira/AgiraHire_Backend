@@ -8,7 +8,8 @@
         {
             public static IActionResult WithMessage(string message)
             {
-                return new BadRequestObjectResult(new { Message = message });
+                return new OkObjectResult(new { Message = message });
+              
             }
         }
     }

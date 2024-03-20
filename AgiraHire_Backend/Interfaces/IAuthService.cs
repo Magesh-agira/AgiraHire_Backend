@@ -5,8 +5,12 @@ namespace AgiraHire_Backend.Interfaces
 {
     public interface IAuthService
     {
+        OperationResult<List<Role>> GetRoles();
+
         OperationResult<string> Login(LoginRequest loginRequest);
         Role AddRole(Role role);
         OperationResult<bool> AssignRoleToUser(AddUserRole obj);
+
+      
     }
 }
