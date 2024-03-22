@@ -75,14 +75,7 @@ namespace AgiraHire_Backend.Services
                 return new OperationResult<List<Role>>(null, "No roles found", 404);
             }
         }
-        public List<Role> GetRoles()
-        {
-            // Fetch roles from the database using your DbContext
-            var roles = _context.Roles.ToList(); // Assuming you have a DbSet<Role> in your DbContext
-
-            return roles;
-
-        }
+       
             public OperationResult<string> Login(LoginRequest loginRequest)
         {
             if (loginRequest != null && !string.IsNullOrWhiteSpace(loginRequest.Email) && !string.IsNullOrWhiteSpace(loginRequest.Password))
