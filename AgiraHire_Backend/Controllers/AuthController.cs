@@ -1,9 +1,9 @@
-﻿using AgiraHire_Backend.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using AgiraHire_Backend.Interfaces;
 using AgiraHire_Backend.Models;
-using AgiraHire_Backend.Services;
-using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using AgiraHire_Backend.Response;
+using AgiraHire_Backend.Response.AgiraHire_Backend.Responses;
+using System;
 
 namespace AgiraHire_Backend.Controllers
 {
@@ -15,72 +15,93 @@ namespace AgiraHire_Backend.Controllers
         public AuthController(IAuthService auth)
         {
             _auth = auth;
-            
         }
 
-        // GET: api/<AuthController>
         [HttpPost("login")]
         public IActionResult Login(LoginRequest loginRequest)
         {
             var result = _auth.Login(loginRequest);
             if (result.Success)
             {
-                return Ok(new { Token = result.Data, Message = result.Message });
+                return Ok(new { StatusCode = 200, Message = result.Message });
             }
             else
             {
-                if (result.Data == null)
+                if (result.ErrorCode == 401)
                 {
-                    // Invalid credentials
-                    return Unauthorized(new { Message = result.Message });
+                    // Unauthorized (401) error
+                    return Ok(new { StatusCode = 401, Message = result.Message });
+                }
+                else if (result.ErrorCode == 404)
+                {
+                    // Not Found (404) error
+                    return Ok(new { StatusCode = 404, Message = result.Message });
+                }
+                else if (result.ErrorCode == 400)
+                {
+                    // Bad Request (400) error
+                    return Ok(new { StatusCode = 400, Message = result.Message });
                 }
                 else
                 {
                     // Other errors
-                    return BadRequest(new { Message = result.Message });
+                    return Ok(new { StatusCode = result.ErrorCode, Message = result.Message });
                 }
-
             }
         }
 
-        // GET api/<AuthController>/5
         [HttpPost("assignRole")]
         public IActionResult AssignRoleToUser(AddUserRole obj)
         {
-            var result = _auth.AssignRoleToUser(obj);
-            if (result.Success)
+            try
             {
-                return Ok(new { Message = result.Message });
+                var result = _auth.AssignRoleToUser(obj);
+                if (result.Success)
+                {
+                    return Ok(new { StatusCode = 200, Message = result.Message });
+                }
+                else
+                {
+                    return BadRequest(new { StatusCode = 400, Message = result.Message });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest(new { Message = result.Message });
+                // Log the exception
+                return StatusCode(500, new { StatusCode = 500, Message = "An error occurred while assigning role to user" });
             }
         }
 
-        // POST api/<AuthController>
-
-
-        // PUT api/<AuthController>/5
-        [HttpPost("addRole")]
-        public Role AddRole( [FromBody] Role role)
-        {
-            var addRole=_auth.AddRole(role);
-            return addRole;
-        }
-
-
-        // GET: api/<AuthController>/roles
         [HttpGet("roles")]
         public IActionResult GetRoles()
         {
-            var roles = _auth.GetRoles(); // Assuming you have a method in your AuthService to retrieve roles
-            return Ok(roles);
+            try
+            {
+                var roles = _auth.GetRoles(); // Implement this method in your IRoleService and RoleService
+                return Ok(roles);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return Ok(new { StatusCode = 500, Message = "An error occurred while fetching roles." });
+
+            }
         }
 
 
-
-
-
+        [HttpPost("addRole")]
+        public IActionResult AddRole([FromBody] Role role)
+        {
+            try
+            {
+                var addedRole = _auth.AddRole(role);
+                return Ok(new { StatusCode = 200, Message = "Role added successfully" });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return BadRequest(new { StatusCode = 400, Message = "An error occurred while adding role" });
+            }
+        }
     }
 }

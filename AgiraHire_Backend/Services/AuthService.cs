@@ -39,7 +39,7 @@ namespace AgiraHire_Backend.Services
                 var user = _context.Users.SingleOrDefault(s => s.UserId == obj.UserId);
                 if (user == null)
                 {
-                    return new OperationResult<bool>(false, "User is not valid");
+                    return new OperationResult<bool>(false, "User is not valid", 404);
                 }
 
                 foreach (var role in obj.RoleIds)
@@ -59,7 +59,20 @@ namespace AgiraHire_Backend.Services
             catch (Exception ex)
             {
                 // Log the exception
-                return new OperationResult<bool>(false, "An error occurred while assigning roles");
+                return new OperationResult<bool>(false, "An error occurred while assigning roles", 500);
+            }
+        }
+
+        public OperationResult<List<Role>> GetRoles()
+        {
+            var roles = _context.Roles.ToList();
+            if (roles != null)
+            {
+                return new OperationResult<List<Role>>(roles, "Roles retrieved successfully");
+            }
+            else
+            {
+                return new OperationResult<List<Role>>(null, "No roles found", 404);
             }
         }
         public List<Role> GetRoles()
@@ -80,11 +93,11 @@ namespace AgiraHire_Backend.Services
                     if (user.VerifyPassword(loginRequest.Password))
                     {
                         var claims = new List<Claim>
-                {
-                    new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
-                    new Claim("Id", user.UserId.ToString()),
-                    new Claim("Email", user.Email)
-                };
+                        {
+                            new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
+                            new Claim("Id", user.UserId.ToString()),
+                            new Claim("Email", user.Email)
+                        };
 
                         int userIdInt = user.UserId;
                         var userRoles = _context.UserRoles.Where(u => u.UserId == userIdInt).ToList();
@@ -109,20 +122,21 @@ namespace AgiraHire_Backend.Services
                     }
                     else
                     {
-                        return new OperationResult<string>(null, "Incorrect password");
+                        // Incorrect password error
+                        return new OperationResult<string>(null, "Incorrect password", 401);
                     }
                 }
                 else
                 {
-                    return new OperationResult<string>(null, "Email not found");
+                    // Email not found error
+                    return new OperationResult<string>(null, "Email not found", 404);
                 }
             }
             else
             {
-                return new OperationResult<string>(null, "Email and password are required");
+                // Email and password are required error
+                return new OperationResult<string>(null, "Email and password are required", 400);
             }
         }
-
-
     }
 }
