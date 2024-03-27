@@ -23,7 +23,7 @@ namespace AgiraHire_Backend.Controllers
             var result = _auth.Login(loginRequest);
             if (result.Success)
             {
-                return Ok(new { StatusCode = 200, Message = result.Message });
+                return Ok(new {result.Data, StatusCode = 200, Message = result.Message });
             }
             else
             {
@@ -58,11 +58,11 @@ namespace AgiraHire_Backend.Controllers
                 var result = _auth.AssignRoleToUser(obj);
                 if (result.Success)
                 {
-                    return Ok(new { StatusCode = 200, Message = result.Message });
+                    return Ok(new { StatusCode = result.ErrorCode, Message = result.Message });
                 }
                 else
                 {
-                    return BadRequest(new { StatusCode = 400, Message = result.Message });
+                    return Ok(new { StatusCode = result.ErrorCode, Message = result.Message });
                 }
             }
             catch (Exception ex)
@@ -91,7 +91,7 @@ namespace AgiraHire_Backend.Controllers
 
         [HttpPost("addRole")]
         public IActionResult AddRole([FromBody] Role role)
-        {
+        {   
             try
             {
                 var addedRole = _auth.AddRole(role);

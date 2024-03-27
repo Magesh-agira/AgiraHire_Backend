@@ -33,55 +33,70 @@ namespace AgiraHire_Backend.Services
 
         public OperationResult<bool> AssignRoleToUser(AddUserRole obj)
         {
+            // Separate checks for UserId and RoleIds with specific messages
+
+            // Check if UserId is valid
+            if (obj.UserId <= 0)
+            {
+                return new OperationResult<bool>(false, "A valid User ID is required.", 400);
+            }
+
+            // Check if RoleIds are provided and valid
+            if (obj.RoleIds == null || !obj.RoleIds.Any())
+            {
+                return new OperationResult<bool>(false, "At least one Role ID is required.", 400);
+            }
+
             try
             {
-                var addRoles = new List<UserRole>();
-                var user = _context.Users.SingleOrDefault(s => s.UserId == obj.UserId);
+                // Check if the user exists
+                var user = _context.Users.Find(obj.UserId);
                 if (user == null)
                 {
-                    return new OperationResult<bool>(false, "User is not valid", 404);
+                    return new OperationResult<bool>(false, "User does not exist.", 404);
                 }
 
-                foreach (var role in obj.RoleIds)
+                // Prepare a list to store new UserRole instances
+                var addRoles = new List<UserRole>();
+                foreach (var roleId in obj.RoleIds)
                 {
-                    var userRole = new UserRole
+                    // Check if the role exists
+                    var roleExists = _context.Roles.Any(r => r.Id == roleId);
+                    if (!roleExists)
                     {
-                        RoleId = role,
-                        UserId = user.UserId
-                    };
-                    addRoles.Add(userRole);
+                        // Return immediately if any of the role IDs is invalid
+                        return new OperationResult<bool>(false, $"Role ID {roleId} is invalid.", 400);
+                    }
+
+                    // Add new UserRole only if the role exists
+                    addRoles.Add(new UserRole { RoleId = roleId, UserId = user.UserId });
                 }
 
+                // Assign roles to the user
                 _context.UserRoles.AddRange(addRoles);
                 _context.SaveChanges();
-                return new OperationResult<bool>(true, "Roles assigned successfully");
+                return new OperationResult<bool>(true, "Roles assigned successfully.",200);
             }
             catch (Exception ex)
             {
                 // Log the exception
-                return new OperationResult<bool>(false, "An error occurred while assigning roles", 500);
+                return new OperationResult<bool>(false, $"An error occurred while assigning roles: {ex.Message}", 500);
             }
         }
+
+
 
         public OperationResult<List<Role>> GetRoles()
         {
             var roles = _context.Roles.ToList();
             if (roles != null)
             {
-                return new OperationResult<List<Role>>(roles, "Roles retrieved successfully");
+                return new OperationResult<List<Role>>(roles, "Roles retrieved successfully",200);
             }
             else
             {
                 return new OperationResult<List<Role>>(null, "No roles found", 404);
             }
-        }
-        public List<Role> GetRoles()
-        {
-            // Fetch roles from the database using your DbContext
-            var roles = _context.Roles.ToList(); // Assuming you have a DbSet<Role> in your DbContext
-
-            return roles;
-
         }
             public OperationResult<string> Login(LoginRequest loginRequest)
         {
