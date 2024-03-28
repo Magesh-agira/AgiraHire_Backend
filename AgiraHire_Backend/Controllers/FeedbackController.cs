@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace AgiraHire_Backend.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class FeedbackController:ControllerBase
+    [Route("api/[controller]")]
+    public class FeedbackController : ControllerBase
     {
         private readonly IFeedbackService _feedbackService;
 
@@ -16,18 +16,32 @@ namespace AgiraHire_Backend.Controllers
         }
 
         [HttpPost]
-
-        public Feedback AddFeedback([FromBody] Feedback feedback)
+        public IActionResult AddFeedback([FromBody] Feedback feedback)
         {
-            var interview_feedback = _feedbackService.AddFeedback(feedback);
-            return interview_feedback;
+            var result = _feedbackService.AddFeedback(feedback);
+            if (result.Success)
+            {
+                return Ok(new { Feedback = result.Data, StatusCode = result.ErrorCode, Message = result.Message });
+            }
+            else
+            {
+                return Ok(new { StatusCode = result.ErrorCode, Message = result.Message });
+            }
         }
 
-        [HttpGet]
-        public List<Feedback> GetFeedback()
+        [HttpGet("getfeedback")]
+        public IActionResult GetFeedback()
         {
-            return _feedbackService.GetFeedback();
-
+            try
+            {
+                var result = _feedbackService.GetFeedback();
+                return Ok(new { result.Data, StatusCode = result.ErrorCode, Message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return Ok(new { StatusCode = 500, Message = "An error occurred while fetching feedbacks." });
+            }
         }
     }
 }
