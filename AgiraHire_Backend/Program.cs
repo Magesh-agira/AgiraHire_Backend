@@ -19,7 +19,7 @@ builder.Services.AddTransient<IUserService, UserService>() ;
 builder.Services.AddTransient<IApplicantService, ApplicantService>() ;
 builder.Services.AddTransient<IInterviewRoundService, InterviewRoundService>() ;
 //builder.Services.AddTransient<IInterviewSlotService, InterviewSlotService>() ;
-builder.Services.AddTransient<IInterviewslotService, InterviewslotService>() ;
+builder.Services.AddTransient<IInterviewSlotService, InterviewSlotService>;
 builder.Services.AddTransient<IFeedbackService,FeedbackService>() ;
 //builder.Services.AddTransient<IInterviewAssignmentService, InterviewAssignmentService>() ;
 builder.Services.AddTransient<IInterviewAssignmentService,InterviewAssignmentService>() ;
