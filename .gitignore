@@ -365,7 +365,6 @@ FodyWeavers.xsd
 /AgiraHire_Backend/WeatherForecast.cs
 /AgiraHire_Backend/appsettings.json
 /AgiraHire_Backend/appsettings.json
-/AgiraHire_Backend/Context/ApplicationDbContext.cs
 /AgiraHire_Backend/Migrations/20240320052739_removetheDataidentity.cs
 /AgiraHire_Backend/Migrations/20240320052739_removetheDataidentity.Designer.cs
 /AgiraHire_Backend/Migrations/20240320064224_restarttheuser.cs
