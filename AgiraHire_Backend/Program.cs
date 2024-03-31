@@ -21,16 +21,14 @@ builder.Services.AddTransient<IInterviewRoundService, InterviewRoundService>() ;
 builder.Services.AddTransient<IInterviewslotService, InterviewslotService>() ;
 builder.Services.AddTransient<IFeedbackService,FeedbackService>() ;
 builder.Services.AddDbContext<ApplicationDbContext>
-    (options => options.UseSqlServer(builder.Configuration.GetConnectionString("Database")));
-
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    (options => options.UseSqlServer(builder.Configuration.GetConnectionString("Database")));  //dependcy injection of db context alos the builer conf retrives the getconnection string from the appsetings.json
+      //This is a lambda expression that configures the DbContext to use SQL Server as its database provider. It sets up the DbContext with the necessary configurations to connect to a SQL Server database
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
         builder =>
         {
-            builder.WithOrigins("http://localhost:3000") // Add your allowed origin(s) here
+            builder.WithOrigins("http://localhost:3000") //front end localhost
                    .AllowAnyHeader()
                    .AllowAnyMethod();
         });

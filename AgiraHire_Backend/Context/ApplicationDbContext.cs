@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AgiraHire_Backend.Context
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : DbContext  //interacting with the database 
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        {
+        {  //this object carries configuration information such as the connection string and database provider to be used.
 
 
         }

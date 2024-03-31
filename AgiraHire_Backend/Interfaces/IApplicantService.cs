@@ -1,12 +1,15 @@
 ﻿using AgiraHire_Backend.Models;
+using AgiraHire_Backend.Response;
 
 namespace AgiraHire_Backend.Interfaces
 {
-    public interface IApplicantService { 
-        public Applicant AddApplicant(Applicant applicant);
+    public interface IApplicantService {
+        OperationResult<Applicant> AddApplicant(Applicant applicant);
 
-        public List<Applicant> GetApplicants();
+        OperationResult<List<Applicant>> GetApplicants();
 
-        Applicant UpdateApplicant(int applicantId, ApplicantStatus newStatus);
+        OperationResult<Applicant> UpdateApplicant(int applicantId, ApplicantStatus newStatus);
     }
+
+
 }

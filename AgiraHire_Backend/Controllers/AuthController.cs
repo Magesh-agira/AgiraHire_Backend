@@ -10,15 +10,15 @@ namespace AgiraHire_Backend.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
-    {
+    {   
         private readonly IAuthService _auth;
-        public AuthController(IAuthService auth)
+        public AuthController(IAuthService  auth)
         {
             _auth = auth;
         }
 
         [HttpPost("login")]
-        public IActionResult Login(LoginRequest loginRequest)
+        public IActionResult Login(LoginRequest  loginRequest)
         {
             var result = _auth.Login(loginRequest);
             if (result.Success)

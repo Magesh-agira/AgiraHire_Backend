@@ -1,10 +1,8 @@
 ﻿using AgiraHire_Backend.Interfaces;
 using AgiraHire_Backend.Models;
-using AgiraHire_Backend.Services;
+using AgiraHire_Backend.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace AgiraHire_Backend.Controllers
 {
@@ -14,32 +12,40 @@ namespace AgiraHire_Backend.Controllers
     public class OpportunitiesController : ControllerBase
     {
         private readonly IOpportunityService _opportunityService;
+
         public OpportunitiesController(IOpportunityService opportunityService)
         {
             _opportunityService = opportunityService;
         }
-        
 
-        // GET api/<OpportunitiesController>/5
+        // GET api/<OpportunitiesController>
         [HttpGet]
-     
-        public List<opportunity> GetOpportunities()
+        public IActionResult GetOpportunities()
         {
-            return _opportunityService.GetOpportunities();
-
+            var result = _opportunityService.GetOpportunities();
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return StatusCode(result.ErrorCode, result);
+            }
         }
-
 
         // POST api/<OpportunitiesController>
         [HttpPost]
-     
-        public opportunity Addopportunity([FromBody] opportunity opp) { 
-            var opportunity=_opportunityService.Addopportunity(opp);
-            return opportunity;
+        public IActionResult AddOpportunity([FromBody] opportunity opp)
+        {
+            var result = _opportunityService.AddOpportunity(opp);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return StatusCode(result.ErrorCode, result);
+            }
         }
-      
-
-        // PUT api/<OpportunitiesController>/5
-
     }
 }
