@@ -1,6 +1,6 @@
 ﻿using AgiraHire_Backend.Models;
 
-namespace AgiraHire_Backend.Interfaces
+namespace AgiraHire_Backend.Interfaces  //it defines the contrect for the service 
 {
     public interface IUserService
     {
