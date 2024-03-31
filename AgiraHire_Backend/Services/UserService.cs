@@ -1,8 +1,11 @@
 ﻿using AgiraHire_Backend.Context;
 using AgiraHire_Backend.Interfaces;
 using AgiraHire_Backend.Models;
+using AgiraHire_Backend.Response;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace AgiraHire_Backend.Services
@@ -16,37 +19,52 @@ namespace AgiraHire_Backend.Services
             _context = context;
         }
 
-        public User AddUser(User user)
+        public OperationResult<User> AddUser(User user)
         {
+            // Check if user object is null
+            if (user == null)
+            {
+                return new OperationResult<User>(null, "User object cannot be null", 400);
+            }
+
+            // Check if email is provided
+            if (string.IsNullOrWhiteSpace(user.Email))
+            {
+                return new OperationResult<User>(null, "Email is required", 400);
+            }
+
+            // Check if password is provided
+            if (string.IsNullOrWhiteSpace(user.Password))
+            {
+                return new OperationResult<User>(null, "Password is required", 400);
+            }
+
+            // Check if employee ID is provided
+            if (string.IsNullOrWhiteSpace(user.Employee_Id))
+            {
+                return new OperationResult<User>(null, "Employee ID is required", 400);
+            }
+
             // Check if the user with the same email already exists, regardless of the isDeleted flag
             var existingUserByEmail = _context.Users.FirstOrDefault(u => u.Email == user.Email);
 
             if (existingUserByEmail != null)
             {
-                // If the existing user is marked as deleted, we can re-use this record
-                // Instead of adding a new entry, we update the existing one
                 if (existingUserByEmail.IsDeleted == true)
                 {
-                    // Update the existing user's properties
-                    existingUserByEmail.SetPassword(user.Password); // Optionally update the password if necessary
-                    existingUserByEmail.Employee_Id = user.Employee_Id; // Update Employee ID
-
-                    // Save changes to the database
+                    existingUserByEmail.SetPassword(user.Password);
+                    existingUserByEmail.Employee_Id = user.Employee_Id;
                     _context.SaveChanges();
-
-                    // Return the updated user entity
-                    return existingUserByEmail;
+                    return new OperationResult<User>(existingUserByEmail, "User updated successfully", 200);
                 }
                 else
                 {
-                    // Add error message to ModelState instead of throwing exception
-                    ModelState.AddModelError("Email", "User with the same email already exists.");
-                    return null;
+                    return new OperationResult<User>(null, "User with the same email already exists.", 400);
                 }
             }
 
             // Set the password for the new user
-            user.SetPassword(user.Password);   //d
+            user.SetPassword(user.Password);
             user.IsDeleted = false;
 
             // Add the user to the database context
@@ -56,32 +74,54 @@ namespace AgiraHire_Backend.Services
             _context.SaveChanges();
 
             // Return the added user entity
-            return addedUser.Entity;
+            return new OperationResult<User>(addedUser.Entity, "User added successfully", 200);
         }
 
 
-        public bool DeleteUser(int UserId)
+        public OperationResult<bool> DeleteUser(int UserId)
         {
-            var user = _context.Users.Find(UserId);
-
-            if (user == null)
+            try
             {
-                return false; // User not found
+                // Check if UserId is valid
+                if (UserId <= 0)
+                {
+                    return new OperationResult<bool>(false, "Invalid UserId", 400);
+                }
+
+                var user = _context.Users.Find(UserId);
+
+                if (user == null)
+                {
+                    return new OperationResult<bool>(false, "User not found", 404);
+                }
+
+                // Soft delete the user by setting IsDeleted flag to true
+                user.IsDeleted = true;
+                _context.SaveChanges();
+
+                return new OperationResult<bool>(true, "User deleted successfully", 200);
             }
-
-            user.IsDeleted = true; // Set IsDeleted property to true
-            _context.SaveChanges();
-
-            return true; // Deletion successful
+            catch (Exception ex)
+            {
+                // Log the exception
+                return new OperationResult<bool>(false, $"An error occurred while deleting user: {ex.Message}", 500);
+            }
         }
 
-        public List<User> GetUsers()
+        public OperationResult<List<User>> GetUsers()
         {
             var users = _context.Users.ToList();
-            return users;
+
+            if (users != null && users.Any())
+            {
+                return new OperationResult<List<User>>(users, "Users retrieved successfully", 200);
+            }
+            else
+            {
+                return new OperationResult<List<User>>(null, "No users found", 404);
+            }
         }
 
-        // Add ModelState property for error messages
-        public ModelStateDictionary ModelState { get; set; } = new ModelStateDictionary();
+        //public ModelStateDictionary ModelState { get; set; } = new ModelStateDictionary();
     }
 }

@@ -2,6 +2,7 @@
 using AgiraHire_Backend.Models;
 using AgiraHire_Backend.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace AgiraHire_Backend.Controllers
 {
@@ -13,46 +14,55 @@ namespace AgiraHire_Backend.Controllers
         public UserController(IUserService user)
         {
             _user = user;
-
         }
 
         [HttpPost("addUser")]
         public IActionResult AddUser([FromBody] User user)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                // If there are errors in ModelState, return BadRequest with ModelState errors
-                return BadRequest(ModelState);
+                var addedUser = _user.AddUser(user);
+                return Ok(new { User = addedUser.Data, StatusCode = addedUser.ErrorCode, Message = addedUser.Message });
             }
-
-            var addedUser = _user.AddUser(user);
-
-
-            if (addedUser == null)
+            catch (Exception ex)
             {
-                // If AddUser method returned null, return NotFound or appropriate status code
-                return NotFound("already email or Employee id  exist");
+                // Log the exception
+                return Ok(new { StatusCode = 500, Message = "An error occurred while adding user." });
             }
-            
-            return Ok(addedUser); // Return added user entity if successful
         }
 
-        [HttpGet("getUser")]
-        public List<User> GetUsers() {
-           return _user.GetUsers();
+
+        [HttpGet("getUsers")]
+        public IActionResult GetUsers()
+        {
+            try
+            {
+                var result = _user.GetUsers();
+                return Ok(new { Users = result.Data, StatusCode = result.ErrorCode, Message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return StatusCode(500, $"An error occurred while fetching users: {ex.Message}");
+            }
         }
+
+
 
         [HttpDelete("DeleteUser/{id}")]
         public IActionResult DeleteUser(int id)
         {
-            var success = _user.DeleteUser(id);
-
-            if (!success)
+            try
             {
-                return NotFound("User not found"); // Return message if user not found
+                var success = _user.DeleteUser(id);
+                return Ok(new { StatusCode = success.ErrorCode, Message = success.Message });
             }
-
-            return Content("Deleted successfull"); // Deletion successful
+            catch (Exception ex)
+            {
+                // Log the exception
+                return NotFound("User not found");
+            }
         }
+
     }
 }
