@@ -1,59 +1,65 @@
 ﻿using AgiraHire_Backend.Interfaces;
 using AgiraHire_Backend.Models;
-using AgiraHire_Backend.Services;
+using AgiraHire_Backend.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace AgiraHire_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     //[Authorize(Roles = "Admin")]
-    public class ApplicantController:ControllerBase
+    public class ApplicantController : ControllerBase
     {
-
         private readonly IApplicantService _applicantService;
+
         public ApplicantController(IApplicantService applicantService)
         {
             _applicantService = applicantService;
         }
 
         [HttpPost]
-       // [Authorize]
-        public Applicant AddApplicant([FromBody] Applicant app)
+        // [Authorize]
+        public IActionResult AddApplicant([FromBody] Applicant app)
         {
-            var applicant = _applicantService.AddApplicant(app);
-            return applicant;
+            var result = _applicantService.AddApplicant(app);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return Ok( result);
+            }
         }
 
         [HttpGet]
-        public List<Applicant> GetApplicants()
+        public IActionResult GetApplicants()
         {
-            return _applicantService.GetApplicants();
-
+            var result = _applicantService.GetApplicants();
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return StatusCode(result.ErrorCode, result);
+            }
         }
 
         [HttpPut("{id}/status")]
         public IActionResult UpdateApplicantStatus(int id, [FromBody] ApplicantStatus newStatus)
         {
-            try
+            var result = _applicantService.UpdateApplicant(id, newStatus);
+            if (result.Success)
             {
-                var updatedApplicant = _applicantService.UpdateApplicant(id, newStatus);
-                if (updatedApplicant != null)
-                {
-                    return Ok(updatedApplicant);
-                }
-                else
-                {
-                    return NotFound();
-                }
+                return Ok(result);
             }
-            catch (Exception)
+            else
             {
-                return StatusCode(500, "An error occurred while updating the applicant status.");
+                return StatusCode(result.ErrorCode, result);
             }
         }
-
-
     }
 }
