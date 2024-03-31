@@ -1,13 +1,14 @@
 ﻿using AgiraHire_Backend.Interfaces;
 using AgiraHire_Backend.Models;
-using AgiraHire_Backend.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 
 namespace AgiraHire_Backend.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class InterviewAssignmentController
+    public class InterviewAssignmentController : ControllerBase
     {
         private readonly IInterviewAssignmentService _interviewAssignmentService;
 
@@ -17,18 +18,33 @@ namespace AgiraHire_Backend.Controllers
         }
 
         [HttpPost]
-
-        public InterviewAssignment AddInterviewAssignment([FromBody] InterviewAssignment interviewAssignment)
+        public IActionResult AddInterviewAssignment([FromBody] InterviewAssignment interviewAssignment)
         {
-            var interview_assignment = _interviewAssignmentService.AddInterviewAssignment(interviewAssignment);
-            return interview_assignment;
+            var result = _interviewAssignmentService.AddInterviewAssignment(interviewAssignment);
+            if (result.Success)
+            {
+                return Ok(new { InterviewAssignment = result.Data, StatusCode = result.ErrorCode, Message = result.Message });
+            }
+            else
+            {
+                return Ok(new { StatusCode = result.ErrorCode, Message = result.Message });
+            }
         }
 
-        [HttpGet]
-        public List<InterviewAssignment> GetInterviewAssignment()
+        [HttpGet("getinterviewassignment")]
+        public IActionResult GetInterviewAssignment()
         {
-            return _interviewAssignmentService.GetInterviewAssignment();
-
+            try
+            {
+                var result = _interviewAssignmentService.GetInterviewAssignment();
+                return Ok(new { InterviewAssignments = result.Data, StatusCode = result.ErrorCode, Message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return StatusCode(500, $"An error occurred while fetching interview assignments: {ex.Message}");
+            }
         }
+
     }
 }

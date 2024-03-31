@@ -1,6 +1,8 @@
 ﻿using AgiraHire_Backend.Interfaces;
 using AgiraHire_Backend.Models;
 using Microsoft.AspNetCore.Mvc;
+using AgiraHire_Backend.Response;
+using System;
 
 namespace AgiraHire_Backend.Controllers
 {
@@ -15,69 +17,55 @@ namespace AgiraHire_Backend.Controllers
             _roundService = roundService;
         }
 
-        [HttpGet]
-        public List<Interview_round> GetAllRounds()
+        [HttpGet("getallrounds")]
+        public IActionResult GetAllRounds()
         {
-            return _roundService.GetAllRounds();
-            
+            try
+            {
+                var result = _roundService.GetAllRounds();
+                return Ok(new { result.Data, StatusCode = result.ErrorCode, Message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return Ok(new { StatusCode = 500, Message = "An error occurred while fetching rounds." });
+            }
         }
 
-/*        [HttpGet("{id}")]
-        public IActionResult GetRoundById(int id)
+
+        [HttpPost]
+        public IActionResult CreateRound([FromBody] Interview_round round)
         {
-            var round = _roundService.GetRoundById(id);
-            if (round != null)
+            var result = _roundService.CreateRound(round);
+            if (result.Success)
             {
-                return Ok(round);
+                return Ok(new { result.Data, StatusCode = result.ErrorCode, Message = result.Message });
             }
             else
             {
-                return NotFound();
+                return Ok(new { StatusCode = result.ErrorCode, Message = result.Message });
             }
-        }*/
-
-        [HttpPost]
-        public IActionResult CreateRound(Interview_round round)
-        {
-            var createdRound = _roundService.CreateRound(round);
-            return Ok(createdRound);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateRound(int id, Interview_round round)
+        public IActionResult UpdateRound(int id, [FromBody] Interview_round round)
         {
             try
             {
-                var updatedRound = _roundService.UpdateRound(id, round);
-                return Ok(updatedRound);
+                var result = _roundService.UpdateRound(id, round);
+                if (result.Success)
+                {
+                    return Ok(new { Data = result.Data, StatusCode = result.ErrorCode, Message = result.Message });
+                }
+                else
+                {
+                    return Ok(new { StatusCode = result.ErrorCode, Message = result.Message });
+                }
             }
-            catch (ArgumentException ex)
+            catch (Exception ex)
             {
-                return NotFound(ex.Message);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "An error occurred while updating the round.");
+                return StatusCode(500, $"An error occurred while updating the round: {ex.Message}");
             }
         }
-
-/*        [HttpDelete("{id}")]
-        public IActionResult DeleteRound(int id)
-        {
-            try
-            {
-                _roundService.DeleteRound(id);
-                return NoContent();
-            }
-            catch (ArgumentException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "An error occurred while deleting the round.");
-            }
-        }*/
     }
-
 }

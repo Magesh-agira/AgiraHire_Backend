@@ -1,14 +1,15 @@
 ﻿using AgiraHire_Backend.Models;
+using AgiraHire_Backend.Response;
+using System.Collections.Generic;
 
 namespace AgiraHire_Backend.Interfaces
 {
     public interface IInterviewRoundService
     {
-        public List<Interview_round> GetAllRounds();
+        OperationResult<List<Interview_round>> GetAllRounds();
 
-        Interview_round CreateRound(Interview_round round);
-        Interview_round UpdateRound(int roundId, Interview_round round);
+        OperationResult<Interview_round> CreateRound(Interview_round round);
 
+        OperationResult<Interview_round> UpdateRound(int roundId, Interview_round round);
     }
-
 }
