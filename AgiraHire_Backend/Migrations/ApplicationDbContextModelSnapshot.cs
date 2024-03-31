@@ -62,7 +62,7 @@ namespace AgiraHire_Backend.Migrations
 
                     b.HasIndex("OpportunityId");
 
-                    b.ToTable("Applicants");
+                    b.ToTable("Applicants", (string)null);
                 });
 
             modelBuilder.Entity("AgiraHire_Backend.Models.Feedback", b =>
@@ -96,7 +96,7 @@ namespace AgiraHire_Backend.Migrations
 
                     b.HasIndex("InterviewerId");
 
-                    b.ToTable("Feedbacks");
+                    b.ToTable("Feedbacks", (string)null);
                 });
 
             modelBuilder.Entity("AgiraHire_Backend.Models.InterviewAssignment", b =>
@@ -122,7 +122,7 @@ namespace AgiraHire_Backend.Migrations
 
                     b.HasIndex("SlotId");
 
-                    b.ToTable("InterviewAssignments");
+                    b.ToTable("InterviewAssignments", (string)null);
                 });
 
             modelBuilder.Entity("AgiraHire_Backend.Models.InterviewSlot", b =>
@@ -155,7 +155,7 @@ namespace AgiraHire_Backend.Migrations
 
                     b.HasIndex("RoundId");
 
-                    b.ToTable("InterviewSlots");
+                    b.ToTable("InterviewSlots", (string)null);
                 });
 
             modelBuilder.Entity("AgiraHire_Backend.Models.Interview_round", b =>
@@ -176,7 +176,7 @@ namespace AgiraHire_Backend.Migrations
 
                     b.HasKey("RoundID");
 
-                    b.ToTable("Interview_Rounds");
+                    b.ToTable("Interview_Rounds", (string)null);
                 });
 
             modelBuilder.Entity("AgiraHire_Backend.Models.Role", b =>
@@ -197,16 +197,15 @@ namespace AgiraHire_Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("AgiraHire_Backend.Models.User", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("NEXT VALUE FOR dbo.UserSequence");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -222,7 +221,7 @@ namespace AgiraHire_Backend.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("AgiraHire_Backend.Models.UserRole", b =>
@@ -241,7 +240,7 @@ namespace AgiraHire_Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("AgiraHire_Backend.Models.opportunity", b =>
@@ -281,7 +280,7 @@ namespace AgiraHire_Backend.Migrations
 
                     b.HasKey("Opportunity_Id");
 
-                    b.ToTable("Opportunities");
+                    b.ToTable("Opportunities", (string)null);
                 });
 
             modelBuilder.Entity("AgiraHire_Backend.Models.Applicant", b =>

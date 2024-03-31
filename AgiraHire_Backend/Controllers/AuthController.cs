@@ -23,24 +23,24 @@ namespace AgiraHire_Backend.Controllers
             var result = _auth.Login(loginRequest);
             if (result.Success)
             {
-                return Ok(new {result.Data, StatusCode = 200, Message = result.Message });
+                return Ok(new {result.Data, StatusCode = result.ErrorCode, Message = result.Message });
             }
             else
             {
                 if (result.ErrorCode == 401)
                 {
                     // Unauthorized (401) error
-                    return Ok(new { StatusCode = 401, Message = result.Message });
+                    return Ok(new { StatusCode = result.ErrorCode, Message = result.Message });
                 }
                 else if (result.ErrorCode == 404)
                 {
                     // Not Found (404) error
-                    return Ok(new { StatusCode = 404, Message = result.Message });
+                    return Ok(new { StatusCode = result.ErrorCode, Message = result.Message });
                 }
                 else if (result.ErrorCode == 400)
                 {
                     // Bad Request (400) error
-                    return Ok(new { StatusCode = 400, Message = result.Message });
+                    return Ok(new { StatusCode = result.ErrorCode, Message = result.Message });
                 }
                 else
                 {
@@ -68,17 +68,17 @@ namespace AgiraHire_Backend.Controllers
             catch (Exception ex)
             {
                 // Log the exception
-                return StatusCode(500, new { StatusCode = 500, Message = "An error occurred while assigning role to user" });
+                return Ok( new { StatusCode = 500, Message = "An error occurred while assigning role to user" });
             }
         }
 
-        [HttpGet("roles")]
+        [HttpGet("getroles")]
         public IActionResult GetRoles()
         {
             try
             {
-                var roles = _auth.GetRoles(); // Implement this method in your IRoleService and RoleService
-                return Ok(roles);
+                var result = _auth.GetRoles(); // Implement this method in your IRoleService and RoleService
+                return Ok(new {result.Data, StatusCode = result.ErrorCode, Message = result.Message });
             }
             catch (Exception ex)
             {
@@ -90,18 +90,31 @@ namespace AgiraHire_Backend.Controllers
 
 
         [HttpPost("addRole")]
+        
         public IActionResult AddRole([FromBody] Role role)
-        {   
+        {
             try
             {
-                var addedRole = _auth.AddRole(role);
-                return Ok(new { StatusCode = 200, Message = "Role added successfully" });
+            
+                var result = _auth.AddRole(role);
+
+                if (result.Success)
+                {
+                   
+                    return Ok(new {result.Data, StatusCode = result.ErrorCode, Message = result.Message });
+                }
+                else
+                {
+                
+                    return Ok(new { StatusCode = result.ErrorCode, Message = result.Message });
+                }
             }
             catch (Exception ex)
             {
-                // Log the exception
-                return BadRequest(new { StatusCode = 400, Message = "An error occurred while adding role" });
+               
+                return Ok(new { StatusCode = 400, Message = "An error occurred while adding role" });
             }
         }
+
     }
 }

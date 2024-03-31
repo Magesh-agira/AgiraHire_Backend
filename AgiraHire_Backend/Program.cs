@@ -18,8 +18,9 @@ builder.Services.AddTransient<IOpportunityService, OpportunityService>() ;
 builder.Services.AddTransient<IUserService, UserService>() ;
 builder.Services.AddTransient<IApplicantService, ApplicantService>() ;
 builder.Services.AddTransient<IInterviewRoundService, InterviewRoundService>() ;
-builder.Services.AddTransient<IInterviewslotService, InterviewslotService>() ;
+builder.Services.AddTransient<IInterviewSlotService, InterviewSlotService>() ;
 builder.Services.AddTransient<IFeedbackService,FeedbackService>() ;
+builder.Services.AddTransient<IInterviewAssignmentService, InterviewAssignmentService>() ;
 builder.Services.AddDbContext<ApplicationDbContext>
     (options => options.UseSqlServer(builder.Configuration.GetConnectionString("Database")));  //dependcy injection of db context alos the builer conf retrives the getconnection string from the appsetings.json
       //This is a lambda expression that configures the DbContext to use SQL Server as its database provider. It sets up the DbContext with the necessary configurations to connect to a SQL Server database

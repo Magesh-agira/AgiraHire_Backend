@@ -24,24 +24,51 @@ namespace AgiraHire_Backend.Services
             _configuration = configuration;
         }
 
-        public Role AddRole(Role role)
+        public OperationResult<Role> AddRole(Role role)
         {
-            var addedRole = _context.Roles.Add(role);
-            _context.SaveChanges();
-            return addedRole.Entity;
+            try
+            {
+                if (role == null)
+                {
+                    return new OperationResult<Role>(null, "Role object cannot be null", 400);
+                }
+
+                if (string.IsNullOrWhiteSpace(role.Name))
+                {
+                    return new OperationResult<Role>(null, "Role Name is required", 400);
+                }
+
+                if (string.IsNullOrWhiteSpace(role.Description))
+                {
+                    return new OperationResult<Role>(null, "Role Description is required", 400);
+                }
+
+                var existingRole = _context.Roles.FirstOrDefault(r => r.Name == role.Name);
+                if (existingRole != null)
+                {
+                    return new OperationResult<Role>(null, "Role with the same name already exists", 400);
+                }
+
+                var addedRole = _context.Roles.Add(role);
+                _context.SaveChanges();
+
+                // Return the added role object along with the success message
+                return new OperationResult<Role>(addedRole.Entity, "Role Added successfully", 200);
+            }
+            catch (Exception ex)
+            {
+                return new OperationResult<Role>(null, "Role cannot be added", 500);
+            }
         }
+
 
         public OperationResult<bool> AssignRoleToUser(AddUserRole obj)
         {
-            // Separate checks for UserId and RoleIds with specific messages
-
-            // Check if UserId is valid
             if (obj.UserId <= 0)
             {
                 return new OperationResult<bool>(false, "A valid User ID is required.", 400);
             }
 
-            // Check if RoleIds are provided and valid
             if (obj.RoleIds == null || !obj.RoleIds.Any())
             {
                 return new OperationResult<bool>(false, "At least one Role ID is required.", 400);
@@ -49,42 +76,37 @@ namespace AgiraHire_Backend.Services
 
             try
             {
-                // Check if the user exists
+     
                 var user = _context.Users.Find(obj.UserId);
                 if (user == null)
                 {
                     return new OperationResult<bool>(false, "User does not exist.", 404);
                 }
 
-                // Prepare a list to store new UserRole instances
                 var addRoles = new List<UserRole>();
                 foreach (var roleId in obj.RoleIds)
                 {
-                    // Check if the role exists
+                   
                     var roleExists = _context.Roles.Any(r => r.Id == roleId);
                     if (!roleExists)
                     {
-                        // Return immediately if any of the role IDs is invalid
+                     
                         return new OperationResult<bool>(false, $"Role ID {roleId} is invalid.", 400);
                     }
 
-                    // Add new UserRole only if the role exists
+                
                     addRoles.Add(new UserRole { RoleId = roleId, UserId = user.UserId });
                 }
 
-                // Assign roles to the user
                 _context.UserRoles.AddRange(addRoles);
                 _context.SaveChanges();
                 return new OperationResult<bool>(true, "Roles assigned successfully.",200);
             }
             catch (Exception ex)
-            {
-                // Log the exception
+            { 
                 return new OperationResult<bool>(false, $"An error occurred while assigning roles: {ex.Message}", 500);
             }
         }
-
-
 
         public OperationResult<List<Role>> GetRoles()
         {
@@ -98,7 +120,7 @@ namespace AgiraHire_Backend.Services
                 return new OperationResult<List<Role>>(null, "No roles found", 404);
             }
         }
-            public OperationResult<string> Login(LoginRequest loginRequest)
+        public OperationResult<string> Login(LoginRequest loginRequest)
         {
             if (loginRequest != null && !string.IsNullOrWhiteSpace(loginRequest.Email) && !string.IsNullOrWhiteSpace(loginRequest.Password))
             {
@@ -133,7 +155,7 @@ namespace AgiraHire_Backend.Services
                             signingCredentials: signIn);
                         var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-                        return new OperationResult<string>(jwtToken, "Login successful");
+                        return new OperationResult<string>(jwtToken, "Login successful",200);
                     }
                     else
                     {
