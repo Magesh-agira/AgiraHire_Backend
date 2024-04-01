@@ -4,6 +4,7 @@ using AgiraHire_Backend.Models;
 using AgiraHire_Backend.Response;
 using AgiraHire_Backend.Response.AgiraHire_Backend.Responses;
 using System;
+using AgiraHire_Backend.Services;
 
 namespace AgiraHire_Backend.Controllers
 {
@@ -16,39 +17,22 @@ namespace AgiraHire_Backend.Controllers
         {
             _auth = auth;
         }
-
         [HttpPost("login")]
-        public IActionResult Login(LoginRequest  loginRequest)
+        public IActionResult Login([FromBody] LoginRequest loginRequest)
         {
-            var result = _auth.Login(loginRequest);
-            if (result.Success)
+            try
             {
-                return Ok(new {result.Data, StatusCode = result.ErrorCode, Message = result.Message });
+                var result = _auth.Login(loginRequest);
+                return Ok(new { result.Data, StatusCode = result.ErrorCode, Message = result.Message });
             }
-            else
+            catch (Exception ex)
             {
-                if (result.ErrorCode == 401)
-                {
-                    // Unauthorized (401) error
-                    return Ok(new { StatusCode = result.ErrorCode, Message = result.Message });
-                }
-                else if (result.ErrorCode == 404)
-                {
-                    // Not Found (404) error
-                    return Ok(new { StatusCode = result.ErrorCode, Message = result.Message });
-                }
-                else if (result.ErrorCode == 400)
-                {
-                    // Bad Request (400) error
-                    return Ok(new { StatusCode = result.ErrorCode, Message = result.Message });
-                }
-                else
-                {
-                    // Other errors
-                    return Ok(new { StatusCode = result.ErrorCode, Message = result.Message });
-                }
+                // Log the exception or handle it as needed
+                return StatusCode(500, "An unexpected error occurred");
             }
         }
+
+
 
         [HttpPost("assignRole")]
         public IActionResult AssignRoleToUser(AddUserRole obj)

@@ -8,7 +8,7 @@ namespace AgiraHire_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles ="Admin")]
+    [Authorize(Roles ="Admin")]
     public class OpportunitiesController : ControllerBase
     {
         private readonly IOpportunityService _opportunityService;
@@ -18,34 +18,35 @@ namespace AgiraHire_Backend.Controllers
             _opportunityService = opportunityService;
         }
 
-        // GET api/<OpportunitiesController>
         [HttpGet]
         public IActionResult GetOpportunities()
         {
-            var result = _opportunityService.GetOpportunities();
-            if (result.Success)
+            try
             {
-                return Ok(result);
+                var result = _opportunityService.GetOpportunities();
+                return Ok(new { Data = result.Data, StatusCode = result.ErrorCode, Message = result.Message });
             }
-            else
+            catch (Exception ex)
             {
-                return StatusCode(result.ErrorCode, result);
+                // Log the exception
+                return StatusCode(500, new { StatusCode = 500, Message = $"An error occurred: {ex.Message}" });
             }
         }
 
-        // POST api/<OpportunitiesController>
+
         [HttpPost]
-        public IActionResult AddOpportunity([FromBody] opportunity opp)
+        public IActionResult AddOpportunity([FromBody] opportunity opportunity)
         {
-            var result = _opportunityService.AddOpportunity(opp);
-            if (result.Success)
+            try
             {
-                return Ok(result);
+                var result = _opportunityService.AddOpportunity(opportunity);
+                return Ok(new { Opportunity = result.Data, StatusCode = result.ErrorCode, Message = result.Message });
             }
-            else
+            catch (Exception ex)
             {
-                return StatusCode(result.ErrorCode, result);
+                return StatusCode(500, new { StatusCode = 500, Message = $"An error occurred: {ex.Message}" });
             }
         }
+
     }
 }
