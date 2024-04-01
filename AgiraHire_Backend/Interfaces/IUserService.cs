@@ -11,3 +11,4 @@ namespace AgiraHire_Backend.Interfaces  //it defines the contrect for the servic
         OperationResult<bool> DeleteUser(int UserId);
     }
 }
+    
