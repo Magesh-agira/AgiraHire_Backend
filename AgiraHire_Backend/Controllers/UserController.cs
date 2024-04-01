@@ -26,7 +26,7 @@ namespace AgiraHire_Backend.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception
+                // Log the exception 
                 return Ok(new { StatusCode = 500, Message = "An error occurred while adding user." });
             }
         }
