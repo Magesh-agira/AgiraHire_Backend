@@ -100,5 +100,20 @@ namespace AgiraHire_Backend.Controllers
             }
         }
 
+        [HttpGet("userRoles")]
+        public IActionResult GetUserRoles()
+        {
+            try
+            {
+                var result = _auth.GetUserRoles();
+                return StatusCode(result.ErrorCode, new { Data = result.Data, Message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it as needed
+                return StatusCode(500, new { Message = "An unexpected error occurred" });
+            }
+        }
+
     }
 }

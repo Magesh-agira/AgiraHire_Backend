@@ -11,7 +11,9 @@ namespace AgiraHire_Backend.Interfaces
         OperationResult<Role> AddRole(Role role);
         OperationResult<bool> AssignRoleToUser(AddUserRole obj);
 
-      
+        OperationResult<List<UserRole>> GetUserRoles();
+
+
     }
 }
 

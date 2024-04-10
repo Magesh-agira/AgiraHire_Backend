@@ -120,6 +120,20 @@ namespace AgiraHire_Backend.Services
                 return new OperationResult<List<Role>>(null, "No roles found", 404);
             }
         }
+
+        public OperationResult<List<UserRole>> GetUserRoles()
+        {
+            try
+            {
+                var userRoles = _context.UserRoles.ToList();
+                return new OperationResult<List<UserRole>>(userRoles, "User roles retrieved successfully", 200);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it as needed
+                return new OperationResult<List<UserRole>>(null, $"An error occurred: {ex.Message}", 500);
+            }
+        }
         public OperationResult<string> Login(LoginRequest loginRequest)
         {
             if (loginRequest != null && !string.IsNullOrWhiteSpace(loginRequest.Email) && !string.IsNullOrWhiteSpace(loginRequest.Password))
@@ -151,7 +165,7 @@ namespace AgiraHire_Backend.Services
                             _configuration["Jwt:Issuer"],
                             _configuration["Jwt:Audience"],
                             claims,
-                            expires: DateTime.UtcNow.AddMinutes(10),
+                            expires: DateTime.UtcNow.AddMinutes(60),
                             signingCredentials: signIn);
                         var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
 
@@ -160,13 +174,13 @@ namespace AgiraHire_Backend.Services
                     else
                     {
                         // Incorrect password error
-                        return new OperationResult<string>(null, "Incorrect password", 401);
+                        return new OperationResult<string>(loginRequest.Password, "Incorrect password", 401);
                     }
                 }
                 else
                 {
                     // Email not found error
-                    return new OperationResult<string>(null, "Email not found", 404);
+                    return new OperationResult<string>(loginRequest.Email, "Email not found", 404);
                 }
             }
             else
