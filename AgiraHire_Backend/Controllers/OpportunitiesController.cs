@@ -48,5 +48,19 @@ namespace AgiraHire_Backend.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public IActionResult GetOpportunityById(int id)
+        {
+            try
+            {
+                var result = _opportunityService.GetOpportunityById(id);
+                return Ok(new { Data = result.Data, StatusCode = result.ErrorCode, Message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { StatusCode = 500, Message = $"An error occurred: {ex.Message}" });
+            }
+        }
+
     }
 }
