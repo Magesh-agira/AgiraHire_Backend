@@ -18,7 +18,7 @@ builder.Services.AddTransient<IOpportunityService, OpportunityService>() ;
 builder.Services.AddTransient<IUserService, UserService>() ;
 builder.Services.AddTransient<IApplicantService, ApplicantService>() ;
 builder.Services.AddTransient<IInterviewRoundService, InterviewRoundService>() ;
-builder.Services.AddTransient<InterviewSlotService, InterviewSlotService>() ;
+builder.Services.AddTransient<IInterviewSlotService, InterviewSlotService>() ;
 builder.Services.AddTransient<IFeedbackService,FeedbackService>() ;
 builder.Services.AddTransient<IInterviewAssignmentService,InterviewAssignmentService>() ;
 builder.Services.AddDbContext<ApplicationDbContext>
