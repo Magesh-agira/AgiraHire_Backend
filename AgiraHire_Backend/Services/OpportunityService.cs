@@ -38,6 +38,26 @@ namespace AgiraHire_Backend.Services
             }
         }
 
+        public OperationResult<opportunity> GetOpportunityById(int id)
+        {
+            try
+            {
+                var opportunity = _context.Opportunities.FirstOrDefault(o => o.Opportunity_Id == id);
+
+                if (opportunity == null)
+                {
+                    return new OperationResult<opportunity>(null, $"Opportunity with ID {id} not found", 404);
+                }
+
+                return new OperationResult<opportunity>(opportunity, "Opportunity retrieved successfully", 200);
+            }
+            catch (Exception ex)
+            {
+                return new OperationResult<opportunity>(null, $"Failed to retrieve opportunity: {ex.Message}", 500);
+            }
+        }
+
+
 
         public OperationResult<opportunity> AddOpportunity(opportunity opportunity)
         {

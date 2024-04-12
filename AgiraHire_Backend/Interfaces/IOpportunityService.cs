@@ -8,5 +8,7 @@ namespace AgiraHire_Backend.Interfaces
     {
         OperationResult<List<opportunity>> GetOpportunities();
         OperationResult<opportunity> AddOpportunity(opportunity opportunity);
+
+        OperationResult<opportunity> GetOpportunityById(int id);
     }
 }

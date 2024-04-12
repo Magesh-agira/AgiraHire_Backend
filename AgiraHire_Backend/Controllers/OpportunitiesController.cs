@@ -8,7 +8,7 @@ namespace AgiraHire_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Admin")]
+    //[Authorize(Roles ="Admin")]
     public class OpportunitiesController : ControllerBase
     {
         private readonly IOpportunityService _opportunityService;
@@ -41,6 +41,20 @@ namespace AgiraHire_Backend.Controllers
             {
                 var result = _opportunityService.AddOpportunity(opportunity);
                 return Ok(new { Opportunity = result.Data, StatusCode = result.ErrorCode, Message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { StatusCode = 500, Message = $"An error occurred: {ex.Message}" });
+            }
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetOpportunityById(int id)
+        {
+            try
+            {
+                var result = _opportunityService.GetOpportunityById(id);
+                return Ok(new { Data = result.Data, StatusCode = result.ErrorCode, Message = result.Message });
             }
             catch (Exception ex)
             {
