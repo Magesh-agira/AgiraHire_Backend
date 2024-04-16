@@ -5,11 +5,14 @@ using AgiraHire_Backend.Response;
 using AgiraHire_Backend.Response.AgiraHire_Backend.Responses;
 using System;
 using AgiraHire_Backend.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AgiraHire_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+   // [Authorize(Roles = "Admin")]
+
     public class AuthController : ControllerBase
     {   
         private readonly IAuthService _auth;

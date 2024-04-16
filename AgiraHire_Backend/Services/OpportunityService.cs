@@ -57,6 +57,46 @@ namespace AgiraHire_Backend.Services
             }
         }
 
+        public OperationResult<opportunity> UpdateOpportunity(int id, opportunity updatedOpportunity)
+        {
+            try
+            {
+                // Check if the updatedOpportunity object is null
+                if (updatedOpportunity == null)
+                {
+                    return new OperationResult<opportunity>(null, "Updated opportunity object cannot be null", 400);
+                }
+
+                // Retrieve the opportunity from the database by its ID
+                var existingOpportunity = _context.Opportunities.FirstOrDefault(o => o.Opportunity_Id == id);
+
+                // Check if the opportunity with the given ID exists
+                if (existingOpportunity == null)
+                {
+                    return new OperationResult<opportunity>(null, $"Opportunity with ID {id} not found", 404);
+                }
+
+                // Update the opportunity properties with the values from updatedOpportunity
+                existingOpportunity.Position = updatedOpportunity.Position;
+                existingOpportunity.Location = updatedOpportunity.Location;
+                existingOpportunity.Employment_Type = updatedOpportunity.Employment_Type;
+                existingOpportunity.Qualification = updatedOpportunity.Qualification;
+                existingOpportunity.Salary = updatedOpportunity.Salary;
+                existingOpportunity.Date_Posted = updatedOpportunity.Date_Posted;
+                existingOpportunity.No_Of_Openings = updatedOpportunity.No_Of_Openings;
+                existingOpportunity.Status = updatedOpportunity.Status;
+                existingOpportunity.IsDeleted = updatedOpportunity.IsDeleted;
+
+                // Save the changes to the database
+                _context.SaveChanges();
+
+                return new OperationResult<opportunity>(existingOpportunity, "Opportunity updated successfully", 200);
+            }
+            catch (Exception ex)
+            {
+                return new OperationResult<opportunity>(null, $"Failed to update opportunity: {ex.Message}", 500);
+            }
+        }
 
 
         public OperationResult<opportunity> AddOpportunity(opportunity opportunity)
