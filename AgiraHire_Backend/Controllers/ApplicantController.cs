@@ -34,7 +34,7 @@ namespace AgiraHire_Backend.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("Applicants")]
         public IActionResult GetApplicants()
         {
             var result = _applicantService.GetApplicants();
